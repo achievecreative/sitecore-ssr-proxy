@@ -1,7 +1,8 @@
-import { ServerBundle, ProxyConfig } from "@sitecore-jss/sitecore-jss-proxy";
+import { ServerBundle } from "@sitecore-jss/sitecore-jss-proxy";
 import fs from "fs";
 import { RestDictionaryService } from "@sitecore-jss/sitecore-jss/i18n";
 import { httpAgentsConfig } from "./httpAgents";
+import { ExtendProxyConfig } from "./ExtendProxyConfig";
 
 /**
  * The JSS application name defaults to providing part of the bundle path as well as the dictionary service endpoint.
@@ -20,9 +21,7 @@ const serverBundle = require(bundlePath) as ServerBundle;
 
 httpAgentsConfig.setUpDefaultAgents(serverBundle);
 
-const apiHost =
-  process.env.SITECORE_API_HOST ||
-  "";
+const apiHost = process.env.SITECORE_API_HOST || "";
 
 appName = appName || serverBundle.appName;
 
@@ -39,7 +38,7 @@ const dictionaryService = new RestDictionaryService({
 /**
  * @type {ProxyConfig}
  */
-export const config: ProxyConfig = {
+export const config: ExtendProxyConfig = {
   /**
    * The require'd server.bundle.js file from your pre-built JSS app
    */
@@ -160,5 +159,5 @@ export const config: ProxyConfig = {
     });
   },
 
-  //publicDomain: "*"//"https://fabuds-sitecore10-ssr.azurewebsites.net/",
+  publicDomain: "*",
 };

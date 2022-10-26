@@ -2,7 +2,7 @@ import express from "express";
 import compression from "compression";
 import "dotenv/config";
 import scProxy from "@sitecore-jss/sitecore-jss-proxy";
-import { config} from "./config";
+import { config } from "./config";
 //import { cacheMiddleware } from "./cacheMiddleware";
 import vhost from "vhost";
 
@@ -42,9 +42,46 @@ server.use((req, _res, next) => {
   next();
 });
 
+server.use(async (req, _res, next) => {
+  let url = req.url?.toLocaleLowerCase();
+
+  //Ignore paths
+  if (
+    !url ||
+    url.startsWith("/-/") ||
+    url.startsWith("/sitcore") ||
+    url.startsWith('/api') ||
+    url === "/"
+  ) {
+    next();
+    return;
+  }
+
+  let parsedRoute = config.serverBundle.parseRouteUrl(url);
+
+  let data = { path: parsedRoute.sitecoreRoute, raw: false };
+  let response = await fetch(`${config.apiHost}/api/sitecore/urlservice/check`, {
+    method: "POST",
+    body: JSON.stringify(data),
+    headers: { "content-type": "application/json" },
+  });
+  let result = await response.json();
+  if (!!result?.status && result.status !== 200) {
+    if (result.status == 404) {
+      _res.redirect(result?.url ?? "/");
+    } else {
+      _res.redirect(result?.url ?? "/");
+    }
+
+    return;
+  }
+
+  next();
+});
+
 // For any other requests, we render app routes server-side and return them
 //server.use('*', scProxy(config.serverBundle.renderView, config, config.serverBundle.parseRouteUrl));
-server.use(vhost("ssr-proxy.azurewebsites.net", scProxy(config.serverBundle.renderView, config, config.serverBundle.parseRouteUrl)));
+server.use(vhost(config.publicDomain,scProxy(config.serverBundle.renderView,config, config.serverBundle.parseRouteUrl)));
 
 server.listen(port, () => {
   console.log(`server listening on port ${port}!`);
