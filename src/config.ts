@@ -159,5 +159,5 @@ export const config: ExtendProxyConfig = {
     });
   },
 
-  publicDomain: "*",
+  publicDomain: "*"
 };

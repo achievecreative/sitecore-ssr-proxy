@@ -80,6 +80,7 @@ server.use(async (req, _res, next) => {
 });
 
 // For any other requests, we render app routes server-side and return them
+
 //server.use('*', scProxy(config.serverBundle.renderView, config, config.serverBundle.parseRouteUrl));
 server.use(vhost(config.publicDomain,scProxy(config.serverBundle.renderView,config, config.serverBundle.parseRouteUrl)));
 

@@ -4,7 +4,7 @@
   "description": "Node server-side-rendering proxy sample for running JSS apps under Node hosting",
   "scripts": {
     "start": "ts-node ./src/index.ts",
-    "build": "del-cli ./build -f & tsc --outDir ./build & cpy ./dist ./build/src & cpy .env ./build/src & cpy web.config ./build/src"
+    "build": "del-cli ./build -f & tsc --outDir ./build & cpy ./dist ./build/src & cpy .env ./build/src & cpy web.config ./build/src & cpy package.json ./build/src & cpy package-lock.json ./build/src"
   },
   "engines": {
     "node": ">=12",
